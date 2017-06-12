@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+source $(dirname $0)/version
+
+cd $(dirname $0)/..
+
+if [ ! -e bin/rancher-cni-ipam ]; then
+    ./scripts/build
+fi
+
+mkdir -p dist/artifacts
+cd bin/
+tar cvzf ../dist/artifacts/rancher-host-local-ipam-${VERSION}.tar.gz .
