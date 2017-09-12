@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/containernetworking/cni/plugins/ipam/host-local/backend/disk"
+	"github.com/rancher/rancher-host-local-ipam/backend/disk"
 
 	"github.com/containernetworking/cni/pkg/skel"
 	"github.com/containernetworking/cni/pkg/types"
@@ -55,21 +55,22 @@ func cmdAdd(args *skel.CmdArgs) error {
 }
 
 func cmdDel(args *skel.CmdArgs) error {
-	ipamConf, err := LoadIPAMConfig(args.StdinData, args.Args)
-	if err != nil {
-		return err
-	}
+	//ipamConf, err := LoadIPAMConfig(args.StdinData, args.Args)
+	//if err != nil {
+	//return err
+	//}
 
-	store, err := disk.New(ipamConf.Name)
-	if err != nil {
-		return err
-	}
-	defer store.Close()
+	//store, err := disk.New(ipamConf.Name)
+	//if err != nil {
+	//return err
+	//}
+	//defer store.Close()
 
-	allocator, err := NewIPAllocator(ipamConf, store)
-	if err != nil {
-		return err
-	}
+	//allocator, err := NewIPAllocator(ipamConf, store)
+	//if err != nil {
+	//return err
+	//}
 
-	return allocator.Release(args.ContainerID)
+	//return allocator.Release(args.ContainerID)
+	return nil
 }

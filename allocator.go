@@ -16,12 +16,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/containernetworking/cni/pkg/ip"
 	"github.com/containernetworking/cni/pkg/types"
-	"github.com/containernetworking/cni/plugins/ipam/host-local/backend"
+	"github.com/rancher/rancher-host-local-ipam/backend"
 )
 
 type IPAllocator struct {
@@ -172,6 +173,15 @@ func (a *IPAllocator) Get(id string) (*types.IPConfig, error) {
 		return nil, fmt.Errorf("requested IP address %q is not available in network: %s", requestedIP, a.conf.Name)
 	}
 
+	requestedIP, err := a.store.GetIPByID(id)
+	if err == nil && requestedIP != nil {
+		return &types.IPConfig{
+			IP:      net.IPNet{IP: requestedIP, Mask: a.conf.Subnet.Mask},
+			Gateway: gw,
+			Routes:  a.conf.Routes,
+		}, nil
+	}
+
 	startIP, endIP := a.getSearchRange()
 	for cur := startIP; ; cur = a.nextIP(cur) {
 		// don't allocate gateway IP
@@ -249,7 +259,7 @@ func (a *IPAllocator) getSearchRange() (net.IP, net.IP) {
 	startFromLastReservedIP := false
 	lastReservedIP, err := a.store.LastReservedIP()
 	if err != nil {
-		log.Printf("Error retriving last reserved ip: %v", err)
+		log.Errorf("Error retriving last reserved ip: %v", err)
 	} else if lastReservedIP != nil {
 		subnet := net.IPNet{
 			IP:   a.conf.Subnet.IP,

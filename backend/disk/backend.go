@@ -105,3 +105,24 @@ func (s *Store) ReleaseByID(id string) error {
 	})
 	return err
 }
+
+func (s *Store) GetIPByID(id string) (net.IP, error) {
+	var ipAddr net.IP
+	err := filepath.Walk(s.dataDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return nil
+		}
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return nil
+		}
+		if string(data) == id {
+			ipAddr = net.ParseIP(info.Name())
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ipAddr, nil
+}
