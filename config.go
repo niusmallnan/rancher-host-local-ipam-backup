@@ -44,7 +44,7 @@ type Net struct {
 	IPAM *IPAMConfig `json:"ipam"`
 }
 
-// NewIPAMConfig creates a NetworkConfig from the given network name.
+// LoadIPAMConfig NewIPAMConfig creates a NetworkConfig from the given network name.
 func LoadIPAMConfig(bytes []byte, args string) (*IPAMConfig, error) {
 	n := Net{}
 	if err := json.Unmarshal(bytes, &n); err != nil {

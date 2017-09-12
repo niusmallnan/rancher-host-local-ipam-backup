@@ -129,7 +129,7 @@ func validateRangeIP(ip net.IP, ipnet *net.IPNet, start net.IP, end net.IP) erro
 	return nil
 }
 
-// Returns newly allocated IP along with its config
+// Get newly allocated IP along with its config
 func (a *IPAllocator) Get(id string) (*types.IPConfig, error) {
 	a.store.Lock()
 	defer a.store.Unlock()
@@ -208,7 +208,7 @@ func (a *IPAllocator) Get(id string) (*types.IPConfig, error) {
 	return nil, fmt.Errorf("no IP addresses available in network: %s", a.conf.Name)
 }
 
-// Releases all IPs allocated for the container with given ID
+// Release all IPs allocated for the container with given ID
 func (a *IPAllocator) Release(id string) error {
 	a.store.Lock()
 	defer a.store.Unlock()

@@ -1,5 +1,3 @@
-// Copyright 2015 CNI authors
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -27,7 +25,7 @@ const lastIPFile = "last_reserved_ip"
 var defaultDataDir = "/var/lib/cni/networks"
 
 type Store struct {
-	FileLock
+	*FileLock
 	dataDir string
 }
 
@@ -41,7 +39,7 @@ func New(network string) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Store{*lk, dir}, nil
+	return &Store{lk, dir}, nil
 }
 
 func (s *Store) Reserve(id string, ip net.IP) (bool, error) {
@@ -85,7 +83,7 @@ func (s *Store) Release(ip net.IP) error {
 	return os.Remove(filepath.Join(s.dataDir, ip.String()))
 }
 
-// N.B. This function eats errors to be tolerant and
+// ReleaseByID N.B. This function eats errors to be tolerant and
 // release as much as possible
 func (s *Store) ReleaseByID(id string) error {
 	err := filepath.Walk(s.dataDir, func(path string, info os.FileInfo, err error) error {
